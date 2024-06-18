@@ -2,6 +2,7 @@ const mazeElement = document.getElementById('maze');
 const rows = 40;
 const cols = 40;
 let maze = [];
+let playerPosition = { x: 0, y: 1 };
 
 function createMaze() {
     for (let y = 0; y < rows; y++) {
@@ -42,10 +43,42 @@ function renderMaze() {
         for (let x = 0; x < cols; x++) {
             const div = document.createElement('div');
             div.className = maze[y][x];
+            if (x === playerPosition.x && y === playerPosition.y) {
+                div.className = 'player';
+            }
             mazeElement.appendChild(div);
         }
     }
 }
+
+function movePlayer(dx, dy) {
+    const newX = playerPosition.x + dx;
+    const newY = playerPosition.y + dy;
+    if (newX >= 0 && newX < cols && newY >= 0 && newY < rows && maze[newY][newX] === 'cell') {
+        playerPosition = { x: newX, y: newY };
+        renderMaze();
+        if (maze[newY][newX] === 'end') {
+            alert('Gratulacje! Ukończyłeś labirynt.');
+        }
+    }
+}
+
+document.addEventListener('keydown', (event) => {
+    switch (event.key) {
+        case 'ArrowUp':
+            movePlayer(0, -1);
+            break;
+        case 'ArrowDown':
+            movePlayer(0, 1);
+            break;
+        case 'ArrowLeft':
+            movePlayer(-1, 0);
+            break;
+        case 'ArrowRight':
+            movePlayer(1, 0);
+            break;
+    }
+});
 
 function init() {
     createMaze();
